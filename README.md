@@ -3,7 +3,7 @@
  <mirror>
 	<mirrorOf>*</mirrorOf>
 	<name>bytes1024-profile</name>
-	<url>http://nexus.bytes1024.org/repository/maven-public/</url>
+	<url>http://nexus.bytes1024.cn/repository/maven-public/</url>
 	<id>bytes1024-profile</id>
 </mirror>
 ```
