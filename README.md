@@ -63,6 +63,7 @@
 *	ValidatorHelper 手动校验<font color=red>不支持</font>`@Ignore` 注解使用
 
 	```
+        使用 ValidatorHelper 即可
 	@Bean
 	public Validator validator() {
 		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
