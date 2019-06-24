@@ -18,7 +18,7 @@
 ```
 ##### >> 基于spring-boot-starter 使用
 *  <font color=red> @EnableParamValidator </font> 开启自动校验
-*  开启校验以后对@Proof标注的类或者方法将会进行方法参数校验（javax.validation），如下标注【1】，【2】将会校验 param1，param2 参数（参数添加了javax.validation 注解），【1】为该类的方式都会使用验证【2】只是该方法
+*  开启校验以后对@Proof标注的类或者方法将会进行方法参数校验（javax.validation），如下标注【1】或者【2】将会校验 param1，param2 参数（参数添加了javax.validation 注解），【1】为该类的方式都会使用验证【2】只是该方法
 	```
 	@Proof 【1】
 	public class TestController {
