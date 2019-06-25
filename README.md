@@ -45,6 +45,7 @@
 	```
 * 验证实体中自定义验证方法(<font color=red>未标注</font>`@Ignore`)
 	* 在实体中自定义方法 标注`@Invoker` ，`@Order`(自然序)
+	* 方法的修饰符一定是`public` 的
 	```
 	@Invoker
 	@Order(1)
