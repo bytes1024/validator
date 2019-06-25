@@ -1,8 +1,9 @@
 package cn.bytes1024.validator.exception;
 
 /**
- *  TODO使用全局异常
- * @author admin
+ * 验证异常
+ *
+ * @author 江浩
  */
 public class ValidatorException extends RuntimeException {
 
@@ -14,7 +15,7 @@ public class ValidatorException extends RuntimeException {
     }
 
     @Override
-    public String getMessage(){
+    public String getMessage() {
         return this.message;
     }
 }

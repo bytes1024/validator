@@ -11,11 +11,9 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
 /**
- * All rights Reserved
- * hibernate validator 验证器
- * @author maliang
- * @date 2019/1/26 13:01
- * @version V1.0
+ * configuration
+ *
+ * @author 江浩
  */
 public class HibernateConfigurationValidator {
 

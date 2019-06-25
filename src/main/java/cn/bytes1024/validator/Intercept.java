@@ -13,10 +13,11 @@ import org.aspectj.lang.reflect.MethodSignature;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 /**
- * @author admin
+ * aop 拦截
+ *
+ * @author 江浩
  */
 @Aspect
 @Slf4j
@@ -31,48 +32,46 @@ public class Intercept {
 
     /**
      * 切入目标对象
-     * @param joinPoint  joinPoint
+     *
+     * @param joinPoint joinPoint
      * @throws ValidatorException 抛出异常
      */
     @Before(value = "@within(cn.bytes1024.validator.annotation.Proof) || @annotation(cn.bytes1024.validator.annotation.Proof)")
     public void invoker(JoinPoint joinPoint) throws ValidatorException {
         Signature signature = joinPoint.getSignature();
-        if(signature instanceof MethodSignature) {
-            MethodSignature methodSignature = (MethodSignature)signature;
+        if (signature instanceof MethodSignature) {
+            MethodSignature methodSignature = (MethodSignature) signature;
             Method method = methodSignature.getMethod();
             Parameter[] parameters = method.getParameters();
 
-            targetInvoker(parameters,joinPoint.getArgs(),0);
+            targetInvoker(parameters, joinPoint.getArgs(), 0);
         }
     }
 
     /**
      * 目标验证对象操作
+     *
      * @param parameters 检查对象
      * @throws ValidatorException 抛出异常
      */
-    private void targetInvoker(Parameter[] parameters,Object[] objects,int index) throws ValidatorException {
+    private void targetInvoker(Parameter[] parameters, Object[] objects, int index) throws ValidatorException {
 
-        if(Objects.isNull(parameters) || parameters.length<=0 || index>=parameters.length) {
+        if (Objects.isNull(parameters) || parameters.length <= 0 || index >= parameters.length) {
             return;
         }
         Parameter parameter = parameters[index];
         Object object = objects[index];
 
-        if(!Objects.isNull(object)) {
+        if (!Objects.isNull(object)) {
             Ignore ignore = parameter.getAnnotation(Ignore.class);
-            if(Objects.isNull(ignore) && !object.getClass().isAnnotationPresent(Ignore.class)) {
+            if (Objects.isNull(ignore) && !object.getClass().isAnnotationPresent(Ignore.class)) {
                 validatorHelper.invoker(object);
             }
         }
 
-        this.targetInvoker(parameters,objects,++index);
+        this.targetInvoker(parameters, objects, ++index);
 
     }
-
-
-
-
 
 
 }
