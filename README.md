@@ -1,4 +1,4 @@
-##### extend-validator
+##### 参数校验工具
 ```
  <mirror>
 	<mirrorOf>*</mirrorOf>
