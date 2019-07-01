@@ -58,7 +58,32 @@
 * 校验顺序
 	* 当字段跟校验方法同时存在时，校验字段优先
 	* 当方法都没有标注排序字段，根据定义位置进行执行（排序以后根据自然循序执行）	
-
+* 多对象属性嵌套
+    * 多实体嵌套，基本属性满足hibernate-validator验证方式（如下）
+    ```
+       @Valid
+       @NotNull(message = "not empty")
+       private TestParam testParam =new TestParam();
+    ```
+    * 多实体嵌套,@Invoker 自定义处理如下，满足类中@Invoker 优先处理，如果对应的实体并没有标注`@Valid` 注解那么对应定义的方法无效
+    ```
+        public class A {
+            
+            @NotNull(...)
+            @Valid
+            private B b = new B();
+            
+            @Invoker
+            public void test1(){
+            }
+        }
+        
+        public class B{
+            @Invoker
+            public void test1(){
+            }
+        }
+    ```
 	---
 ##### >> 使用 ValidatorHelper 手动校验（创建实例）
 *	ValidatorHelper 手动校验<font color=red>不支持</font>`@Ignore` 注解使用,使用 `ValidatorHelper` 即可

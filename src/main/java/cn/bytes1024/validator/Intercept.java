@@ -43,7 +43,6 @@ public class Intercept {
             MethodSignature methodSignature = (MethodSignature) signature;
             Method method = methodSignature.getMethod();
             Parameter[] parameters = method.getParameters();
-
             targetInvoker(parameters, joinPoint.getArgs(), 0);
         }
     }

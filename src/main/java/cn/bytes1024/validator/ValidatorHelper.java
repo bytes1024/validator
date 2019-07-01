@@ -2,17 +2,17 @@ package cn.bytes1024.validator;
 
 import cn.bytes1024.validator.annotation.Invoker;
 import cn.bytes1024.validator.exception.ValidatorException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Path;
+import javax.validation.Valid;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -21,6 +21,7 @@ import java.util.stream.Stream;
  *
  * @author 江浩
  */
+@Slf4j
 public class ValidatorHelper {
 
     private javax.validation.Validator validator;
@@ -29,14 +30,21 @@ public class ValidatorHelper {
         this.validator = validator;
     }
 
+    /**
+     * 验证当前对象
+     * <p>
+     * </p>
+     *
+     * @param object :
+     * @return : void
+     * @author 江浩
+     */
     public void invoker(Object object) throws ValidatorException {
-
-        if (Objects.isNull(object)) {
-            return;
-        }
-
-        this.invokerFieldThrows(object);
+        Map<Path, String> results = this.invokerFieldReturn(object);
+        this.throwExceptionFormat(results);
+        //对应的方法
         this.invokerMethodThrows(object);
+
     }
 
 
@@ -61,18 +69,8 @@ public class ValidatorHelper {
                 .collect(Collectors.toMap(ConstraintViolation::getPropertyPath, ConstraintViolation::getMessage));
     }
 
-    /**
-     * 抛出异常的方式
-     *
-     * @param object 目标
-     * @throws ValidatorException 异常
-     */
-    public void invokerFieldThrows(Object object) throws ValidatorException {
-        Map<Path, String> results = this.invokerFieldReturn(object);
-        this.throwFormat(results);
-    }
 
-    private void throwFormat(Map<Path, String> results) throws ValidatorException {
+    private void throwExceptionFormat(Map<Path, String> results) throws ValidatorException {
         if (results != null && !results.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             for (Map.Entry<Path, String> entry : results.entrySet()) {
@@ -91,7 +89,53 @@ public class ValidatorHelper {
      * @throws ValidatorException 异常
      */
     public void invokerMethodThrows(Object object) throws ValidatorException {
+
+        /**
+         * 当前对象标识@Invoker的方法
+         */
         this.invokerMethod(object, getMethods(object), 0);
+
+        /**
+         * 当前对象对应属性的@Invoker方法
+         */
+        try {
+            Object[] tagFields = this.getTagFields(object);
+            if (!Objects.isNull(tagFields)) {
+                for (Object tagField : tagFields) {
+                    this.invokerMethodThrows(tagField);
+                }
+            }
+        } catch (IllegalAccessException e) {
+            log.error("invoker method error: {}", e);
+        }
+
+    }
+
+    /**
+     * 获取所有标识valid注解的属性
+     *
+     * @param object :
+     * @return : java.lang.Object[]
+     * @author 江浩
+     */
+    private Object[] getTagFields(Object object) throws IllegalAccessException {
+
+        Field[] fields = object.getClass().getDeclaredFields();
+        if (!Objects.isNull(fields) && fields.length > 0) {
+            List<Object> objects = new ArrayList<>(fields.length);
+            for (Field field : fields) {
+                if (field.isAnnotationPresent(Valid.class)) {
+                    field.setAccessible(true);
+                    Object fieldValue = field.get(object);
+                    if (!Objects.isNull(fieldValue)) {
+                        objects.add(fieldValue);
+                    }
+                    field.setAccessible(false);
+                }
+            }
+            return objects.toArray();
+        }
+        return null;
     }
 
     private void invokerMethod(Object target, List<Method> methods, int index) throws ValidatorException {
