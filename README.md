@@ -65,7 +65,7 @@
        @NotNull(message = "not empty")
        private TestParam testParam =new TestParam();
     ```
-    * 多实体嵌套,@Invoker 自定义处理如下，满足类中@Invoker 优先处理，如果对应的实体并没有标注`@Valid` 注解那么对应定义的方法无效
+    * 多实体嵌套,@Invoker 自定义处理如下，满足当前类中`@Invoker` 优先处理，如果对应的属性实体并没有标注`@Valid` 注解那么对应定义的`@Invoker`方法无效
     ```
         public class A {
             
